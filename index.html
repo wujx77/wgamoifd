@@ -3,234 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Video & Podcast Editor</title>
+    <title>We Marry - 婚礼请柬制作</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Parisienne&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. 基础 CSS 变量与重置 --- */
+        /* --- 1. 全局样式设置 (清新自然风) --- */
         :root {
-            --primary-color: #2563eb;
-            --bg-color: #f8fafc;
-            --text-color: #1e293b;
-            --card-bg: #ffffff;
-            --nav-bg: rgba(255, 255, 255, 0.9);
-            --transition: all 0.3s ease;
+            --primary-green: #749F82; /* 鼠尾草绿 */
+            --light-green: #E8F3E8;
+            --text-main: #425e4f;
+            --cream: #FFFAF0;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(116, 159, 130, 0.15);
         }
 
-        /* 深色模式变量 */
-        body.dark-mode {
-            --primary-color: #60a5fa;
-            --bg-color: #0f172a;
-            --text-color: #e2e8f0;
-            --card-bg: #1e293b;
-            --nav-bg: rgba(15, 23, 42, 0.9);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            transition: var(--transition);
+            font-family: 'Noto Serif SC', serif;
+            background-color: var(--light-green);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-
-        /* --- 2. 导航栏 --- */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--nav-bg);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            z-index: 1000;
+        /* --- 2. 制作器界面 (Editor) --- */
+        .editor-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.5s ease;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a:hover { color: var(--primary-color); }
-
-        button#theme-toggle {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--text-color);
-            background: transparent;
-            color: var(--text-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        button#theme-toggle:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
-        }
-
-        /* --- 3. 首屏 Hero Section --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        h1 {
             text-align: center;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
+            font-family: 'Parisienne', cursive;
             font-size: 3rem;
-            margin-bottom: 1rem;
+            color: var(--primary-green);
+            margin-bottom: 30px;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            color: #64748b;
+        .step-group {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 20px;
         }
 
-        .cta-button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
+        label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: bold;
-            transition: transform 0.2s;
+            color: var(--text-main);
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            margin-bottom: 10px;
+            background: #fafafa;
         }
 
-        /* --- 4. 特性网格 Section --- */
-        .features {
-            padding: 5rem 10%;
+        input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: var(--white);
         }
 
-        .features h2 {
-            text-align: center;
-            margin-bottom: 3rem;
+        /* 模版选择 */
+        .template-options {
+            display: flex;
+            gap: 15px;
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 2rem;
+        .tpl-card {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #eee;
             border-radius: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        /* --- 5. 页脚 --- */
-        footer {
+            cursor: pointer;
             text-align: center;
-            padding: 2rem;
-            background: var(--card-bg);
-            margin-top: auto;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .tpl-card:hover, .tpl-card.active {
+            border-color: var(--primary-green);
+            background: var(--light-green);
         }
 
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            nav ul { display: none; } /* 简化处理：手机端隐藏菜单 */
+        /* 按钮 */
+        .btn-generate {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
         }
+        .btn-generate:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(116, 159, 130, 0.4);
+        }
+
+        /* --- 3. 最终请柬界面 (Preview/Result) --- */
+        #final-invite {
+            display: none; /* 初始隐藏 */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--cream);
+            z-index: 100;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .invite-content {
+            max-width: 480px; /* 模拟手机宽度 */
+            margin: 0 auto;
+            background: var(--white);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.05);
+        }
+
+        /* 装饰元素 */
+        .decoration {
+            width: 100%;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg width="40" height="10" viewBox="0 0 40 10" xmlns="http://www.w3.org/2000/svg"><path d="M0 10 Q 10 0 20 10 T 40 10" stroke="%23749F82" fill="none" stroke-width="2"/></svg>') repeat-x;
+            margin: 20px 0;
+            opacity: 0.5;
+        }
+
+        .invite-photo {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 100px 100px 0 0; /* 拱门形状 */
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .invite-names {
+            font-family: 'Parisienne', cursive;
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin: 10px 0;
+        }
+
+        .invite-details {
+            margin: 30px 0;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+
+        .map-btn {
+            display: inline-block;
+            padding: 10px 30px;
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+            border-radius: 30px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* 音乐控制 */
+        .music-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            animation: spin 4s linear infinite;
+            z-index: 200;
+        }
+        
+        .music-paused {
+            animation-play-state: paused;
+            opacity: 0.6;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 底部操作栏 */
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-edit { background: #eee; color: #333; }
+        .btn-share { background: var(--primary-green); color: white; }
+
+        /* 模版样式差异 */
+        .theme-classic .invite-photo { border-radius: 5px; border: 10px solid #fff; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .theme-modern .invite-photo { border-radius: 200px; width: 300px; height: 300px; margin: 0 auto 30px; }
+        
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">MyWebsite.</div>
-        <nav>
-            <ul>
-                <li><a href="#">首页</a></li>
-                <li><a href="#">关于我们</a></li>
-                <li><a href="#">服务</a></li>
-                <li><a href="#">联系</a></li>
-            </ul>
-        </nav>
-        <button id="theme-toggle" onclick="toggleTheme()">切换模式</button>
-    </header>
-
-    <section class="hero">
-        <h1>欢迎来到我的静态网页</h1>
-        <p>这是一个基于 HTML5、CSS3 和原生 JavaScript 构建的现代化着陆页模板。它简洁、快速且完全响应式。</p>
-        <a href="#" class="cta-button">立即开始</a>
-    </section>
-
-    <section class="features">
-        <h2>核心特点</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>🚀 极速加载</h3>
-                <p>纯静态代码，没有复杂的后端依赖，加载速度飞快，用户体验极佳。</p>
-            </div>
-            <div class="card">
-                <h3>📱 响应式设计</h3>
-                <p>无论是在电脑大屏还是手机小屏上，页面都能自动调整布局，完美展示。</p>
-            </div>
-            <div class="card">
-                <h3>🎨 易于定制</h3>
-                <p>代码结构清晰，注释详细。您可以轻松修改颜色、文字和图片。</p>
+    <div class="editor-container" id="editor">
+        <h1>Design Your Wedding</h1>
+        
+        <div class="step-group">
+            <label>1. 选择模版风格</label>
+            <div class="template-options">
+                <div class="tpl-card active" onclick="selectTemplate('default', this)">🌿 清新拱门</div>
+                <div class="tpl-card" onclick="selectTemplate('classic', this)">📷 经典留白</div>
+                <div class="tpl-card" onclick="selectTemplate('modern', this)">⚪ 现代圆形</div>
             </div>
         </div>
-    </section>
 
-    <footer>
-        <p>&copy; 2024 我的静态网页. All rights reserved.</p>
-    </footer>
+        <div class="step-group">
+            <label>2. 上传婚纱照 (用于封面)</label>
+            <input type="file" id="photoInput" accept="image/*">
+        </div>
+
+        <div class="step-group">
+            <label>3. 婚礼信息</label>
+            <input type="text" id="groomName" placeholder="新郎姓名" value="李雷">
+            <input type="text" id="brideName" placeholder="新娘姓名" value="韩梅梅">
+            
+            <label>时间与日期</label>
+            <input type="date" id="weddingDate">
+            <input type="time" id="weddingTime" value="11:08">
+
+            <label>婚礼地点 (将自动生成地图链接)</label>
+            <input type="text" id="locationName" placeholder="例如：香格里拉大酒店宴会厅">
+        </div>
+
+        <div class="step-group">
+            <label>4. 背景音乐</label>
+            <select id="bgMusic">
+                <option value="canon">Canon in D (钢琴版)</option>
+                <option value="wedding_march">婚礼进行曲 (经典)</option>
+                <option value="beautiful">Beautiful in White</option>
+            </select>
+        </div>
+
+        <button class="btn-generate" onclick="generateInvite()">✨ 一键生成请柬</button>
+    </div>
+
+    <div id="final-invite">
+        <audio id="audioPlayer" loop></audio>
+        
+        <div class="music-control" onclick="toggleMusic()">🎵</div>
+
+        <div class="invite-content" id="inviteCard">
+            <div class="decoration"></div>
+            
+            <div class="invite-header">
+                <p>我们要结婚啦</p>
+                <p style="color: #999; font-size: 0.9rem; margin-top:5px;">SAVE THE DATE</p>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <img id="displayPhoto" src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="invite-photo" alt="Wedding Photo">
+            </div>
+
+            <div class="invite-names">
+                <span id="showGroom">Groom</span> & <span id="showBride">Bride</span>
+            </div>
+
+            <div class="decoration"></div>
+
+            <div class="invite-details">
+                <p>谨定于</p>
+                <p style="font-weight: bold; font-size: 1.3rem; margin: 10px 0;" id="showDate">2024.05.20</p>
+                <p id="showTime">11:08</p>
+                <br>
+                <p>诚挚邀请您见证我们的幸福时刻</p>
+                <p style="margin-top: 20px; color: var(--text-main); font-weight: bold;" id="showLocation">地点加载中...</p>
+                
+                <a href="#" target="_blank" id="mapLink" class="map-btn">📍 导航去这里</a>
+            </div>
+            
+            <div style="margin-top: 50px; font-size: 0.8rem; color: #aaa;">
+                <p>期待您的光临</p>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="action-btn btn-edit" onclick="backToEdit()">✏️ 返回修改</button>
+            <button class="action-btn btn-share" onclick="shareInvite()">📤 分享给好友</button>
+        </div>
+    </div>
 
     <script>
-        // 切换深色/浅色模式的函数
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            
-            // 简单的用户体验优化：保存用户的偏好
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        let selectedTemplate = 'default';
+        let uploadedImageURL = null;
+
+        // 1. 选择模版逻辑
+        function selectTemplate(tplName, element) {
+            selectedTemplate = tplName;
+            // UI 更新
+            document.querySelectorAll('.tpl-card').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
         }
 
-        // 页面加载时检查用户之前的偏好
-        window.onload = () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
+        // 2. 图片上传预览 (FileReader)
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageURL = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 3. 核心：生成请柬
+        function generateInvite() {
+            // 获取输入值
+            const groom = document.getElementById('groomName').value;
+            const bride = document.getElementById('brideName').value;
+            const date = document.getElementById('weddingDate').value;
+            const time = document.getElementById('weddingTime').value;
+            const location = document.getElementById('locationName').value;
+
+            if(!groom || !bride || !location) {
+                alert("请填写完整的新人姓名和地点哦~");
+                return;
+            }
+
+            // 填充内容
+            document.getElementById('showGroom').innerText = groom;
+            document.getElementById('showBride').innerText = bride;
+            document.getElementById('showDate').innerText = date || '2024.10.01';
+            document.getElementById('showTime').innerText = time;
+            document.getElementById('showLocation').innerText = location;
+
+            // 处理图片
+            if (uploadedImageURL) {
+                document.getElementById('displayPhoto').src = uploadedImageURL;
+            }
+
+            // 处理地图 (使用通用地图搜索接口)
+            // 这里使用了高德/百度/Google通用的搜索查询参数逻辑
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+            const mapLinkBtn = document.getElementById('mapLink');
+            mapLinkBtn.href = mapUrl;
+
+            // 处理模版样式
+            const contentDiv = document.getElementById('inviteCard');
+            contentDiv.className = 'invite-content'; // 重置
+            if (selectedTemplate === 'classic') contentDiv.classList.add('theme-classic');
+            if (selectedTemplate === 'modern') contentDiv.classList.add('theme-modern');
+
+            // 切换视图
+            document.getElementById('editor').style.display = 'none';
+            const finalView = document.getElementById('final-invite');
+            finalView.style.display = 'block';
+
+            // 播放音乐 (注意：浏览器通常阻止自动播放，需要用户交互，这里尝试播放)
+            playMusic();
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+
+        // 4. 返回修改
+        function backToEdit() {
+            document.getElementById('final-invite').style.display = 'none';
+            document.getElementById('editor').style.display = 'block';
+            document.getElementById('audioPlayer').pause();
+        }
+
+        // 5. 音乐逻辑
+        const audio = document.getElementById('audioPlayer');
+        let isPlaying = false;
+
+        function playMusic() {
+            // 这里使用示例音频，实际使用请替换为您的 mp3 链接
+            // 由于版权原因，这里暂时不放真实长链接，您可以替换 src
+            // 模拟：audio.src = "your-music-url.mp3"; 
+            console.log("尝试播放音乐...");
+            isPlaying = true;
+            document.querySelector('.music-control').classList.remove('music-paused');
+            // audio.play().catch(e => console.log("需用户交互才能播放"));
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                document.querySelector('.music-control').classList.add('music-paused');
+            } else {
+                audio.play();
+                document.querySelector('.music-control').classList.remove('music-paused');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 6. 模拟分享
+        function shareInvite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '我们的婚礼请柬',
+                    text: '诚挚邀请您参加我们的婚礼',
+                    url: window.location.href
+                });
+            } else {
+                alert('链接已复制！您可以直接粘贴发送给好友（注意：这是一个演示页面，真实分享需要部署到服务器）。');
             }
         }
+        
+        // 设置默认日期为今天之后
+        document.getElementById('weddingDate').valueAsDate = new Date();
     </script>
 </body>
 </html>
